@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Weikeng Yang">
+<meta name="dcterms.date" content="2023-07-29">
+<meta name="description" content="Testing Quarto">
 
-<title>myblog - Topic modeling</title>
+<title>myblog - First File</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -140,15 +143,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Topic modeling</h1>
-                      </div>
+      <h1 class="title">First File</h1>
+                  <div>
+        <div class="description">
+          Testing Quarto
+        </div>
+      </div>
+                </div>
   </div>
     
   
   <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Weikeng Yang </p>
+            </div>
+    </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">July 29, 2023</p>
+      </div>
+    </div>
     
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">July 26, 2023</p>
+      </div>
+    </div>
       
     </div>
     
@@ -163,6 +189,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
+<section id="topic-modeling" class="level1">
+<h1>Topic modeling</h1>
 <p>We are going to look at data from the <a href="http://qwone.com/~jason/20Newsgroups/">20 Newsgroups</a> dataset. These are postings to newsgroups in 20 different categories.</p>
 <p>Scikit-learn has a function for downloading the data. See: https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_20newsgroups.html</p>
 <section id="lda" class="level2">
@@ -331,6 +359,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>    ax[i[<span class="dv">0</span>]].barh(x,y,height<span class="op">=</span><span class="fl">0.5</span>)</span>
 <span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
 </section>
 <section id="tf-idf-term-frequency-inverse-document-frequency" class="level1">
 <h1>TF-IDF (Term Frequency Inverse Document Frequency)</h1>
