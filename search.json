@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "myblog",
     "section": "",
-    "text": "Introduction\n\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nPost With Code\n\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nJul 31, 2023\n\n\nHarlow Malloc\n\n\n\n\n\n\n  \n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nJul 28, 2023\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
+    "text": "Cancer Relates to Race?\n\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nJul 31, 2023\n\n\nWeikeng Yang\n\n\n\n\n\n\n  \n\n\n\n\nPost With Code\n\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nJul 31, 2023\n\n\nHarlow Malloc\n\n\n\n\n\n\n  \n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nJul 28, 2023\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/post-with-code/index.html",
@@ -16,30 +16,30 @@
   {
     "objectID": "posts/Topics.html",
     "href": "posts/Topics.html",
-    "title": "Introduction",
+    "title": "Cancer Relates to Race?",
     "section": "",
-    "text": "Information about the rates of cancer deaths in each state is reported. The data shows the total rate as well as rates based on sex, age, and race. Rates are also shown for three specific kinds of cancer: breast cancer, colorectal cancer, and lung cancer.\nDataset Link"
+    "text": "Information about the rates of cancer deaths in each state is reported. The data shows the total rate as well as rates based on sex, age, and race. Rates are also shown for three specific kinds of cancer: breast cancer, colorectal cancer, and lung cancer.\nDataset Link\n\n\n\n\nUnderstanding demographic patterns: By examining cancer death rates based on sex, age, and race, researchers can gain insights into how different demographic groups may be affected by cancer. This can help identify populations that are particularly vulnerable or may require targeted interventions.\nPredictive modeling: By using the dataset to build predictive models, researchers can forecast future cancer death rates based on factors such as population growth, aging demographics, and changes in risk behaviors. This information can help policymakers allocate resources and plan cancer prevention initiatives.\n\n\n\n\n\nAre there significant differences in total cancer rates among states?\nHow do cancer rates differ between males and females, and across different age groups?\nAre there variations in cancer rates based on different racial or ethnic groups?\nWhich states have the highest and lowest rates of breast, colorectal, and lung cancer?\nAre there any correlations between the rates of different types of cancer?\nAre race and ethnicity risk factors for cancer?"
   },
   {
     "objectID": "posts/Topics.html#data-description",
     "href": "posts/Topics.html#data-description",
-    "title": "Introduction",
+    "title": "Cancer Relates to Race?",
     "section": "",
     "text": "Information about the rates of cancer deaths in each state is reported. The data shows the total rate as well as rates based on sex, age, and race. Rates are also shown for three specific kinds of cancer: breast cancer, colorectal cancer, and lung cancer.\nDataset Link"
   },
   {
     "objectID": "posts/Topics.html#motivations",
     "href": "posts/Topics.html#motivations",
-    "title": "Introduction",
-    "section": "Motivations:",
-    "text": "Motivations:\n\nUnderstanding demographic patterns: By examining cancer death rates based on sex, age, and race, researchers can gain insights into how different demographic groups may be affected by cancer. This can help identify populations that are particularly vulnerable or may require targeted interventions.\nPredictive modeling: By using the dataset to build predictive models, researchers can forecast future cancer death rates based on factors such as population growth, aging demographics, and changes in risk behaviors. This information can help policymakers allocate resources and plan cancer prevention initiatives."
+    "title": "Cancer Relates to Race?",
+    "section": "",
+    "text": "Understanding demographic patterns: By examining cancer death rates based on sex, age, and race, researchers can gain insights into how different demographic groups may be affected by cancer. This can help identify populations that are particularly vulnerable or may require targeted interventions.\nPredictive modeling: By using the dataset to build predictive models, researchers can forecast future cancer death rates based on factors such as population growth, aging demographics, and changes in risk behaviors. This information can help policymakers allocate resources and plan cancer prevention initiatives."
   },
   {
     "objectID": "posts/Topics.html#main-research-questions",
     "href": "posts/Topics.html#main-research-questions",
-    "title": "Introduction",
-    "section": "Main Research Questions:",
-    "text": "Main Research Questions:\n\nAre there significant differences in total cancer rates among states?\nHow do cancer rates differ between males and females, and across different age groups?\nAre there variations in cancer rates based on different racial or ethnic groups?\nWhich states have the highest and lowest rates of breast, colorectal, and lung cancer?\nAre there any correlations between the rates of different types of cancer?\nAre race and ethnicity risk factors for cancer?"
+    "title": "Cancer Relates to Race?",
+    "section": "",
+    "text": "Are there significant differences in total cancer rates among states?\nHow do cancer rates differ between males and females, and across different age groups?\nAre there variations in cancer rates based on different racial or ethnic groups?\nWhich states have the highest and lowest rates of breast, colorectal, and lung cancer?\nAre there any correlations between the rates of different types of cancer?\nAre race and ethnicity risk factors for cancer?"
   },
   {
     "objectID": "posts/welcome/index.html",
