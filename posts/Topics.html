@@ -8,6 +8,7 @@
 
 <meta name="author" content="Weikeng Yang">
 <meta name="dcterms.date" content="2023-07-31">
+<meta name="description" content="Cancer data research">
 
 <title>myblog - Cancer Relates to Race?</title>
 <style>
@@ -95,6 +96,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 <link rel="stylesheet" href="../styles.css">
@@ -143,9 +147,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">Cancer Relates to Race?</h1>
-                                <div class="quarto-categories">
-                <div class="quarto-category">news</div>
-                <div class="quarto-category">code</div>
+                  <div>
+        <div class="description">
+          Cancer data research
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">cancer</div>
+                <div class="quarto-category">data</div>
                 <div class="quarto-category">analysis</div>
               </div>
                   </div>
@@ -182,120 +191,835 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://www.cancertherapyadvisor.com/wp-content/uploads/sites/12/2023/01/woman-with-cancer-with-doctor_G_364273373-860x573.jpg" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Aggregating Data Hides Cancer Disparities Affecting Asian and NHPI Patients in the US - Cancer Therapy Advisor</figcaption>
+</figure>
+</div>
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
+<p>This project aims to analyze the cancer death rate differences in Unites States by states.</p>
 <section id="data-description" class="level2">
 <h2 class="anchored" data-anchor-id="data-description">Data Description</h2>
-<p>Information about the rates of cancer deaths in each state is reported. The data shows the total rate as well as rates based on sex, age, and race. Rates are also shown for three specific kinds of cancer: breast cancer, colorectal cancer, and lung cancer.</p>
+<p>The data used in this study were retrieved from the CORGIS project, it is information about the rates of cancer deaths in each state is reported. The data shows the total rate as well as rates based on sex, age, and race. Rates are also shown for three specific kinds of cancer: breast cancer, colorectal cancer, and lung cancer. The data is collected from 2007-2013.</p>
 <p><a href="https://corgis-edu.github.io/corgis/csv/cancer/">Dataset Link</a></p>
+<p>USDA Economic Research Service: https://data.ers.usda.gov/reports.aspx?ID=17829#P20da6056f1564446b1aeb037b0be4abe_4_244iT2</p>
 </section>
 <section id="motivations" class="level2">
 <h2 class="anchored" data-anchor-id="motivations">Motivations:</h2>
-<ul>
-<li><p>Understanding demographic patterns: By examining cancer death rates based on sex, age, and race, researchers can gain insights into how different demographic groups may be affected by cancer. This can help identify populations that are particularly vulnerable or may require targeted interventions.</p></li>
-<li><p>Predictive modeling: By using the dataset to build predictive models, researchers can forecast future cancer death rates based on factors such as population growth, aging demographics, and changes in risk behaviors. This information can help policymakers allocate resources and plan cancer prevention initiatives.</p></li>
-</ul>
+<p>Cancer, a main health problem for us to care about. By examining cancer death rates based on sex, age, and race, researchers can gain insights into how different demographic groups may be affected by cancer. This can help identify populations that are particularly vulnerable or may require targeted interventions. To understand the risk factors, we may help those people who we care about to avoid cancer.</p>
 </section>
 <section id="main-research-questions" class="level2">
 <h2 class="anchored" data-anchor-id="main-research-questions">Main Research Questions:</h2>
-<ol type="1">
-<li>Are there significant differences in total cancer rates among states?</li>
+<ul>
+<li>Are there significant differences in total cancer rates among states? Which states have the highest and lowest overall cancer death rates?</li>
+<li>Which types of cancer have the highest death rates overall, and how do these rates vary by state?</li>
 <li>How do cancer rates differ between males and females, and across different age groups?</li>
-<li>Are there variations in cancer rates based on different racial or ethnic groups?</li>
-<li>Which states have the highest and lowest rates of breast, colorectal, and lung cancer?</li>
-<li>Are there any correlations between the rates of different types of cancer?</li>
-<li>Are race and ethnicity risk factors for cancer?</li>
-</ol>
+<li>Are there variations in cancer rates based on different racial or ethnic groups? Are race and ethnicity risk factors for cancer?</li>
+<li>Are there any correlations between cancer death rates and other factors, such as socioeconomic status or access to healthcare?</li>
+</ul>
 </section>
 </section>
 <section id="methods" class="level1">
 <h1>Methods</h1>
-<p>First, we need preparation, we are going to use <code>request</code> to get the url of the dataset to read the csv file.</p>
-<div class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># !pip3 install beautifulsoup4</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> bs4 <span class="im">import</span> BeautifulSoup</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve the htmnl code of the CORGIS webpage</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://corgis-edu.github.io/corgis/csv/"</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> requests.get(url)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>html <span class="op">=</span> response.text</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>status <span class="op">=</span> response.status_code</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>soup <span class="op">=</span> BeautifulSoup(html, <span class="st">"html.parser"</span>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>h3_contents <span class="op">=</span> soup.find_all(<span class="st">'h3'</span>)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>h3_list <span class="op">=</span> []</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> h3_tag <span class="kw">in</span> h3_contents:</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  h3_list.append(h3_tag.text)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This study was conducted based on data from CORGIS Dataset Project. To analyze data, investigate correlation between death rate and other factors, python and python library are used.</p>
+<section id="library-imports-read-data" class="level2">
+<h2 class="anchored" data-anchor-id="library-imports-read-data">Library Imports &amp; Read Data</h2>
+<p>Package is pre-installed for you if you access through binder.</p>
+<p>Execute the following cell for important imports.</p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> bs4 <span class="im">import</span> BeautifulSoup</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> bs4 <span class="im">import</span> BeautifulSoup</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve the htmnl code of the CORGIS webpage</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://corgis-edu.github.io/corgis/csv/"</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> requests.get(url)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>html <span class="op">=</span> response.text</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>status <span class="op">=</span> response.status_code</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>soup <span class="op">=</span> BeautifulSoup(html, <span class="st">"html.parser"</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>h3_contents <span class="op">=</span> soup.find_all(<span class="st">'h3'</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>h3_list <span class="op">=</span> []</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> h3_tag <span class="kw">in</span> h3_contents:</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  h3_list.append(h3_tag.text)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co"># reference: Assignment 4</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pdcorgis(a):</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">try</span>:</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> a.lower()</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.replace(<span class="st">' '</span>, <span class="st">'_'</span>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    dataset_url <span class="op">=</span> <span class="ss">f"https://corgis-edu.github.io/corgis/csv/</span><span class="sc">{</span>dataset<span class="sc">}</span><span class="ss">/"</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> requests.get(dataset_url)</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    html_code <span class="op">=</span> response.text</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    status <span class="op">=</span> response.status_code</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    soup <span class="op">=</span> BeautifulSoup(html_code, <span class="st">'html.parser'</span>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    links <span class="op">=</span> soup.find_all(<span class="st">'a'</span>)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    download_link <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> links: </span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> i.has_attr(<span class="st">'download'</span>):</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>        download_link <span class="op">=</span> i[<span class="st">'href'</span>]</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span> </span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> download_link:</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>      csv_url <span class="op">=</span> <span class="ss">f"https://corgis-edu.github.io/corgis/csv/</span><span class="sc">{</span>dataset<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>download_link<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>      corgisdf <span class="op">=</span> pd.read_csv(csv_url)</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> corgisdf</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>  <span class="cf">except</span>:</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"An exception ocurred"</span>)</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="co"># the dataframe we need for the research</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pdcorgis(<span class="st">"Cancer"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="dataset-overview" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-overview">Dataset Overview</h2>
+<p>This section is for have a general overview and understanding for the dataset of this project.</p>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.info())</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.describe())</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># printing the first 5 rows of dataset</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 51 entries, 0 to 50
+Data columns (total 75 columns):
+ #   Column                                        Non-Null Count  Dtype  
+---  ------                                        --------------  -----  
+ 0   State                                         51 non-null     object 
+ 1   Total.Rate                                    51 non-null     float64
+ 2   Total.Number                                  51 non-null     float64
+ 3   Total.Population                              51 non-null     float64
+ 4   Rates.Age.&lt; 18                                51 non-null     float64
+ 5   Rates.Age.18-45                               51 non-null     float64
+ 6   Rates.Age.45-64                               51 non-null     float64
+ 7   Rates.Age.&gt; 64                                51 non-null     float64
+ 8   Rates.Age and Sex.&lt; 18.Female                 51 non-null     float64
+ 9   Rates.Age and Sex.&lt; 18.Male                   51 non-null     float64
+ 10  Rates.Age and Sex.18 - 45.Female              51 non-null     float64
+ 11  Rates.Age and Sex.18 - 45.Male                51 non-null     float64
+ 12  Rates.Age and Sex.45 - 64.Female              51 non-null     float64
+ 13  Rates.Age and Sex.45 - 64.Male                51 non-null     float64
+ 14  Rates.Age and Sex.&gt; 64.Female                 51 non-null     float64
+ 15  Rates.Age and Sex.&gt; 64.Male                   51 non-null     float64
+ 16  Rates.Race.White                              51 non-null     float64
+ 17  Rates.Race.White non-Hispanic                 51 non-null     float64
+ 18  Rates.Race.Black                              51 non-null     float64
+ 19  Rates.Race.Asian                              51 non-null     float64
+ 20  Rates.Race.Indigenous                         51 non-null     float64
+ 21  Rates.Race and Sex.Female.White               51 non-null     float64
+ 22  Rates.Race and Sex.Female.White non-Hispanic  51 non-null     float64
+ 23  Rates.Race and Sex.Female.Black               51 non-null     float64
+ 24  Rates.Race and Sex.Female.Black non-Hispanic  51 non-null     float64
+ 25  Rates.Race and Sex.Female.Asian               51 non-null     float64
+ 26  Rates.Race and Sex.Female.Indigenous          51 non-null     float64
+ 27  Rates.Race and Sex.Male.White                 51 non-null     float64
+ 28  Rates.Race and Sex.Male.White non-Hispanic    51 non-null     float64
+ 29  Rates.Race and Sex.Male.Black                 51 non-null     float64
+ 30  Rates.Race and Sex.Male.Black non-Hispanic    51 non-null     float64
+ 31  Rates.Race and Sex.Male.Asian                 51 non-null     float64
+ 32  Rates.Race and Sex.Male.Indigenous            51 non-null     float64
+ 33  Rates.Race.Hispanic                           51 non-null     float64
+ 34  Rates.Race and Sex.Female.Hispanic            51 non-null     float64
+ 35  Rates.Race and Sex.Male.Hispanic              51 non-null     float64
+ 36  Types.Breast.Total                            51 non-null     float64
+ 37  Types.Breast.Age.18 - 44                      51 non-null     float64
+ 38  Types.Breast.Age.45 - 64                      51 non-null     float64
+ 39  Types.Breast.Age.&gt; 64                         51 non-null     float64
+ 40  Types.Breast.Race.White                       51 non-null     float64
+ 41  Types.Breast.Race.White non-Hispanic          51 non-null     float64
+ 42  Types.Breast.Race.Black                       51 non-null     float64
+ 43  Types.Breast.Race.Black non-Hispanic          51 non-null     float64
+ 44  Types.Breast.Race.Asian                       51 non-null     float64
+ 45  Types.Breast.Race.Indigenous                  51 non-null     float64
+ 46  Types.Breast.Race.Hispanic                    51 non-null     float64
+ 47  Types.Colorectal.Total                        51 non-null     float64
+ 48  Types.Colorectal.Age and Sex.Female.18 - 44   51 non-null     float64
+ 49  Types.Colorectal.Age and Sex.Male.18 - 44     51 non-null     float64
+ 50  Types.Colorectal.Age and Sex.Female.45 - 64   51 non-null     float64
+ 51  Types.Colorectal.Age and Sex.Male.45 - 64     51 non-null     float64
+ 52  Types.Colorectal.Age and Sex.Female.&gt; 64      51 non-null     float64
+ 53  Types.Colorectal.Age and Sex.Male.&gt; 64        51 non-null     float64
+ 54  Types.Colorectal.Race.White                   51 non-null     float64
+ 55  Types.Colorectal.Race.White non-Hispanic      51 non-null     float64
+ 56  Types.Colorectal.Race.Black                   51 non-null     float64
+ 57  Types.Colorectal.Race.Black non-Hispanic      51 non-null     float64
+ 58  Types.Colorectal.Race.Asian                   51 non-null     float64
+ 59  Types.Colorectal.Race.Indigenous              51 non-null     float64
+ 60  Types.Colorectal.Race.Hispanic                51 non-null     float64
+ 61  Types.Lung.Total                              51 non-null     float64
+ 62  Types.Lung.Age and Sex.Female.18 - 44         51 non-null     float64
+ 63  Types.Lung.Age and Sex.Male.18 - 44           51 non-null     float64
+ 64  Types.Lung.Age and Sex.Female.45 - 64         51 non-null     float64
+ 65  Types.Lung.Age and Sex.Male.45 - 64           51 non-null     float64
+ 66  Types.Lung.Age and Sex.Female.&gt; 64            51 non-null     float64
+ 67  Types.Lung.Age and Sex.Male.&gt; 64              51 non-null     float64
+ 68  Types.Lung.Race.White                         51 non-null     float64
+ 69  Types.Lung.Race.White non-Hispanic            51 non-null     float64
+ 70  Types.Lung.Race.Black                         51 non-null     float64
+ 71  Types.Lung.Race.Black non-Hispanic            51 non-null     float64
+ 72  Types.Lung.Race.Asian                         51 non-null     float64
+ 73  Types.Lung.Race.Indigenous                    51 non-null     float64
+ 74  Types.Lung.Race.Hispanic                      51 non-null     float64
+dtypes: float64(74), object(1)
+memory usage: 30.0+ KB
+None
+       Total.Rate   Total.Number  Total.Population  Rates.Age.&lt; 18  \
+count   51.000000      51.000000      5.100000e+01       51.000000   
+mean   190.656863   78723.725490      4.240151e+07        2.119608   
+std     28.592155   80861.292676      4.784244e+07        0.502004   
+min     98.500000    6361.000000      3.931624e+06        0.000000   
+25%    176.500000   20631.000000      1.186991e+07        2.050000   
+50%    196.100000   54930.000000      3.034806e+07        2.200000   
+75%    210.750000   93328.000000      4.650326e+07        2.400000   
+max    254.600000  393980.000000      2.611357e+08        2.700000   
+
+       Rates.Age.18-45  Rates.Age.45-64  Rates.Age.&gt; 64  \
+count        51.000000        51.000000       51.000000   
+mean         14.764706       197.576471      980.949020   
+std           2.204343        31.261040       75.189556   
+min          10.000000       132.300000      735.800000   
+25%          13.350000       175.000000      943.550000   
+50%          14.600000       189.300000      999.600000   
+75%          16.250000       217.850000     1031.450000   
+max          20.300000       263.900000     1110.200000   
+
+       Rates.Age and Sex.&lt; 18.Female  Rates.Age and Sex.&lt; 18.Male  \
+count                      51.000000                    51.000000   
+mean                        1.727451                     2.033333   
+std                         0.846186                     0.931808   
+min                         0.000000                     0.000000   
+25%                         1.750000                     2.050000   
+50%                         2.000000                     2.300000   
+75%                         2.200000                     2.500000   
+max                         2.900000                     3.200000   
+
+       Rates.Age and Sex.18 - 45.Female  ...  \
+count                         51.000000  ...   
+mean                          16.013725  ...   
+std                            2.530219  ...   
+min                           10.300000  ...   
+25%                           14.150000  ...   
+50%                           16.000000  ...   
+75%                           17.700000  ...   
+max                           22.800000  ...   
+
+       Types.Lung.Age and Sex.Male.45 - 64  \
+count                            51.000000   
+mean                             64.825490   
+std                              21.288737   
+min                              26.000000   
+25%                              48.950000   
+50%                              59.700000   
+75%                              77.600000   
+max                             112.600000   
+
+       Types.Lung.Age and Sex.Female.&gt; 64  Types.Lung.Age and Sex.Male.&gt; 64  \
+count                           51.000000                         51.000000   
+mean                           224.668627                        354.956863   
+std                             33.313394                         69.938477   
+min                             92.700000                        153.200000   
+25%                            209.550000                        313.300000   
+50%                            225.800000                        342.600000   
+75%                            248.150000                        391.000000   
+max                            298.300000                        519.100000   
+
+       Types.Lung.Race.White  Types.Lung.Race.White non-Hispanic  \
+count              51.000000                           51.000000   
+mean               48.158824                           49.341176   
+std                 9.446125                            9.274183   
+min                20.400000                           20.600000   
+25%                42.750000                           43.700000   
+50%                48.100000                           48.800000   
+75%                54.500000                           54.950000   
+max                71.500000                           71.900000   
+
+       Types.Lung.Race.Black  Types.Lung.Race.Black non-Hispanic  \
+count              51.000000                           51.000000   
+mean               44.056863                           44.500000   
+std                20.517283                           21.431435   
+min                 0.000000                            0.000000   
+25%                38.150000                           39.950000   
+50%                47.000000                           48.600000   
+75%                60.000000                           60.350000   
+max                73.200000                           73.600000   
+
+       Types.Lung.Race.Asian  Types.Lung.Race.Indigenous  \
+count              51.000000                   51.000000   
+mean               19.323529                   27.309804   
+std                10.427801                   26.435236   
+min                 0.000000                    0.000000   
+25%                18.350000                    4.450000   
+50%                22.200000                   20.900000   
+75%                25.500000                   44.250000   
+max                33.900000                   87.500000   
+
+       Types.Lung.Race.Hispanic  
+count                 51.000000  
+mean                  16.184314  
+std                    8.041079  
+min                    0.000000  
+25%                   13.700000  
+50%                   18.100000  
+75%                   20.450000  
+max                   35.200000  
+
+[8 rows x 74 columns]</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">State</th>
+<th data-quarto-table-cell-role="th">Total.Rate</th>
+<th data-quarto-table-cell-role="th">Total.Number</th>
+<th data-quarto-table-cell-role="th">Total.Population</th>
+<th data-quarto-table-cell-role="th">Rates.Age.&lt; 18</th>
+<th data-quarto-table-cell-role="th">Rates.Age.18-45</th>
+<th data-quarto-table-cell-role="th">Rates.Age.45-64</th>
+<th data-quarto-table-cell-role="th">Rates.Age.&gt; 64</th>
+<th data-quarto-table-cell-role="th">Rates.Age and Sex.&lt; 18.Female</th>
+<th data-quarto-table-cell-role="th">Rates.Age and Sex.&lt; 18.Male</th>
+<th data-quarto-table-cell-role="th">...</th>
+<th data-quarto-table-cell-role="th">Types.Lung.Age and Sex.Male.45 - 64</th>
+<th data-quarto-table-cell-role="th">Types.Lung.Age and Sex.Female.&gt; 64</th>
+<th data-quarto-table-cell-role="th">Types.Lung.Age and Sex.Male.&gt; 64</th>
+<th data-quarto-table-cell-role="th">Types.Lung.Race.White</th>
+<th data-quarto-table-cell-role="th">Types.Lung.Race.White non-Hispanic</th>
+<th data-quarto-table-cell-role="th">Types.Lung.Race.Black</th>
+<th data-quarto-table-cell-role="th">Types.Lung.Race.Black non-Hispanic</th>
+<th data-quarto-table-cell-role="th">Types.Lung.Race.Asian</th>
+<th data-quarto-table-cell-role="th">Types.Lung.Race.Indigenous</th>
+<th data-quarto-table-cell-role="th">Types.Lung.Race.Hispanic</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>Alabama</td>
+<td>214.2</td>
+<td>71529.0</td>
+<td>33387205.0</td>
+<td>2.0</td>
+<td>18.5</td>
+<td>244.7</td>
+<td>1017.8</td>
+<td>2.0</td>
+<td>2.1</td>
+<td>...</td>
+<td>102.9</td>
+<td>221.7</td>
+<td>457.4</td>
+<td>59.9</td>
+<td>60.4</td>
+<td>52.6</td>
+<td>52.8</td>
+<td>23.0</td>
+<td>22.9</td>
+<td>14.8</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>Alaska</td>
+<td>128.1</td>
+<td>6361.0</td>
+<td>4966180.0</td>
+<td>1.7</td>
+<td>11.8</td>
+<td>170.9</td>
+<td>965.2</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>...</td>
+<td>50.3</td>
+<td>268.3</td>
+<td>335.0</td>
+<td>48.7</td>
+<td>49.5</td>
+<td>45.6</td>
+<td>47.9</td>
+<td>33.0</td>
+<td>74.4</td>
+<td>0.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>Arizona</td>
+<td>165.6</td>
+<td>74286.0</td>
+<td>44845598.0</td>
+<td>2.5</td>
+<td>13.6</td>
+<td>173.6</td>
+<td>840.2</td>
+<td>2.6</td>
+<td>2.5</td>
+<td>...</td>
+<td>47.0</td>
+<td>191.9</td>
+<td>275.8</td>
+<td>39.5</td>
+<td>42.2</td>
+<td>38.2</td>
+<td>40.4</td>
+<td>21.3</td>
+<td>11.1</td>
+<td>21.6</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>Arkansas</td>
+<td>223.9</td>
+<td>45627.0</td>
+<td>20382448.0</td>
+<td>2.3</td>
+<td>17.6</td>
+<td>250.1</td>
+<td>1048.3</td>
+<td>2.6</td>
+<td>2.0</td>
+<td>...</td>
+<td>106.5</td>
+<td>248.7</td>
+<td>484.7</td>
+<td>63.4</td>
+<td>64.2</td>
+<td>62.9</td>
+<td>63.0</td>
+<td>18.1</td>
+<td>16.2</td>
+<td>14.6</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>California</td>
+<td>150.9</td>
+<td>393980.0</td>
+<td>261135696.0</td>
+<td>2.6</td>
+<td>13.7</td>
+<td>163.7</td>
+<td>902.4</td>
+<td>2.4</td>
+<td>2.8</td>
+<td>...</td>
+<td>36.8</td>
+<td>192.5</td>
+<td>269.0</td>
+<td>37.2</td>
+<td>42.6</td>
+<td>46.5</td>
+<td>48.6</td>
+<td>25.8</td>
+<td>18.4</td>
+<td>18.3</td>
+</tr>
+</tbody>
+</table>
+
+<p>5 rows × 75 columns</p>
+</div>
+</div>
+</div>
+<p>We could see that there are mainly 4 age groups of metadata in this dataset. However, the metadata names are not canonical and not organized. For example, the data in the columns of Breast Cancer didn’t collect the data by sex, comparing to colorectal and lung cancer. And for all these three types of cancer doesn’t have the data for age below 18.</p>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># getting the columns of the dataset</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>columns <span class="op">=</span> <span class="bu">list</span>(df.columns)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># examining missing values</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Missing values distribution: "</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.isnull().mean())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Missing values distribution: 
+State                                 0.0
+Total.Rate                            0.0
+Total.Number                          0.0
+Total.Population                      0.0
+Rates.Age.&lt; 18                        0.0
+                                     ... 
+Types.Lung.Race.Black                 0.0
+Types.Lung.Race.Black non-Hispanic    0.0
+Types.Lung.Race.Asian                 0.0
+Types.Lung.Race.Indigenous            0.0
+Types.Lung.Race.Hispanic              0.0
+Length: 75, dtype: float64</code></pre>
+</div>
+</div>
+<p>A map would be helpful to</p>
+<div class="cell" data-execution_count="68">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.express <span class="im">as</span> px</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># for using plotly, we need to convert full state name to their abbreviations in python since it does not recoginze full name of state</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># reference for this:https://gist.github.com/rogerallen/1583593 (A Python Dictionary to translate US States to Two letter codes)</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>us_state_to_abbrev <span class="op">=</span> {</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Alabama"</span>: <span class="st">"AL"</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Alaska"</span>: <span class="st">"AK"</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Arizona"</span>: <span class="st">"AZ"</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Arkansas"</span>: <span class="st">"AR"</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"California"</span>: <span class="st">"CA"</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Colorado"</span>: <span class="st">"CO"</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Connecticut"</span>: <span class="st">"CT"</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Delaware"</span>: <span class="st">"DE"</span>,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Florida"</span>: <span class="st">"FL"</span>,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Georgia"</span>: <span class="st">"GA"</span>,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Hawaii"</span>: <span class="st">"HI"</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Idaho"</span>: <span class="st">"ID"</span>,</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Illinois"</span>: <span class="st">"IL"</span>,</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Indiana"</span>: <span class="st">"IN"</span>,</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Iowa"</span>: <span class="st">"IA"</span>,</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Kansas"</span>: <span class="st">"KS"</span>,</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Kentucky"</span>: <span class="st">"KY"</span>,</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Louisiana"</span>: <span class="st">"LA"</span>,</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Maine"</span>: <span class="st">"ME"</span>,</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Maryland"</span>: <span class="st">"MD"</span>,</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Massachusetts"</span>: <span class="st">"MA"</span>,</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Michigan"</span>: <span class="st">"MI"</span>,</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Minnesota"</span>: <span class="st">"MN"</span>,</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Mississippi"</span>: <span class="st">"MS"</span>,</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Missouri"</span>: <span class="st">"MO"</span>,</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Montana"</span>: <span class="st">"MT"</span>,</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Nebraska"</span>: <span class="st">"NE"</span>,</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Nevada"</span>: <span class="st">"NV"</span>,</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>    <span class="st">"New Hampshire"</span>: <span class="st">"NH"</span>,</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>    <span class="st">"New Jersey"</span>: <span class="st">"NJ"</span>,</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>    <span class="st">"New Mexico"</span>: <span class="st">"NM"</span>,</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>    <span class="st">"New York"</span>: <span class="st">"NY"</span>,</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>    <span class="st">"North Carolina"</span>: <span class="st">"NC"</span>,</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>    <span class="st">"North Dakota"</span>: <span class="st">"ND"</span>,</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Ohio"</span>: <span class="st">"OH"</span>,</span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Oklahoma"</span>: <span class="st">"OK"</span>,</span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Oregon"</span>: <span class="st">"OR"</span>,</span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Pennsylvania"</span>: <span class="st">"PA"</span>,</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Rhode Island"</span>: <span class="st">"RI"</span>,</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>    <span class="st">"South Carolina"</span>: <span class="st">"SC"</span>,</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>    <span class="st">"South Dakota"</span>: <span class="st">"SD"</span>,</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Tennessee"</span>: <span class="st">"TN"</span>,</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Texas"</span>: <span class="st">"TX"</span>,</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Utah"</span>: <span class="st">"UT"</span>,</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Vermont"</span>: <span class="st">"VT"</span>,</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Virginia"</span>: <span class="st">"VA"</span>,</span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Washington"</span>: <span class="st">"WA"</span>,</span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>    <span class="st">"West Virginia"</span>: <span class="st">"WV"</span>,</span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Wisconsin"</span>: <span class="st">"WI"</span>,</span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Wyoming"</span>: <span class="st">"WY"</span>,</span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>    <span class="st">"District of Columbia"</span>: <span class="st">"DC"</span>,</span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>    <span class="st">"American Samoa"</span>: <span class="st">"AS"</span>,</span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Guam"</span>: <span class="st">"GU"</span>,</span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Northern Mariana Islands"</span>: <span class="st">"MP"</span>,</span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Puerto Rico"</span>: <span class="st">"PR"</span>,</span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a>    <span class="st">"United States Minor Outlying Islands"</span>: <span class="st">"UM"</span>,</span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a>    <span class="st">"U.S. Virgin Islands"</span>: <span class="st">"VI"</span>,</span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Abbreviation'</span>] <span class="op">=</span> df[<span class="st">'State'</span>].<span class="bu">map</span>(us_state_to_abbrev)</span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the choropleth map</span></span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> px.choropleth(df,</span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a>                    locations<span class="op">=</span>df[<span class="st">'Abbreviation'</span>],</span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a>                    locationmode<span class="op">=</span><span class="st">'USA-states'</span>,  <span class="co"># set the location mode to 'country names' for USA states</span></span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a>                    color<span class="op">=</span><span class="st">'Total.Rate'</span>,  <span class="co"># the variable to be represented by color</span></span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a>                    hover_name<span class="op">=</span><span class="st">'State'</span>,  <span class="co"># the values to be displayed when hovering over each state</span></span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a>                    scope<span class="op">=</span><span class="st">'usa'</span>,  <span class="co"># set the scope to 'usa' for United States map</span></span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a>                    title<span class="op">=</span><span class="st">'Cancer Death Rates by State 2007-2013'</span>)</span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a><span class="co"># Show the map</span></span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<div>                            <div id="9f1b0fa3-d1a2-4875-9bfb-279fe189c191" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("9f1b0fa3-d1a2-4875-9bfb-279fe189c191")) {                    Plotly.newPlot(                        "9f1b0fa3-d1a2-4875-9bfb-279fe189c191",                        [{"coloraxis":"coloraxis","geo":"geo","hovertemplate":"\u003cb\u003e%{hovertext}\u003c\u002fb\u003e\u003cbr\u003e\u003cbr\u003eAbbreviation=%{location}\u003cbr\u003eTotal.Rate=%{z}\u003cextra\u003e\u003c\u002fextra\u003e","hovertext":["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","District of Columbia","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"],"locationmode":"USA-states","locations":["AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"],"name":"","z":[214.2,128.1,165.6,223.9,150.9,139.0,190.5,210.2,182.1,219.2,159.4,166.0,162.1,189.2,202.7,210.3,188.9,226.3,202.9,239.1,179.3,197.8,205.3,178.4,211.4,211.2,196.1,187.5,167.9,197.9,189.9,163.2,183.2,188.7,189.1,217.8,209.4,199.1,227.7,211.2,202.6,196.2,213.1,145.8,98.5,211.6,177.1,175.9,254.6,197.5,167.9],"type":"choropleth"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmapgl":[{"type":"heatmapgl","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"geo":{"domain":{"x":[0.0,1.0],"y":[0.0,1.0]},"center":{},"scope":"usa"},"coloraxis":{"colorbar":{"title":{"text":"Total.Rate"}},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"legend":{"tracegroupgap":0},"title":{"text":"Cancer Death Rates by State 2007-2013"}},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('9f1b0fa3-d1a2-4875-9bfb-279fe189c191');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };                });            </script>        </div>
+</div>
+</div>
+<p>Geographically, the map helps identify regions with higher or lower cancer death rate levels, revealing patterns and contrasts.</p>
+<p>First, we are going to use a pie chart to analysis the proportion of different types of cancer in the United States.</p>
 <div class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> bs4 <span class="im">import</span> BeautifulSoup</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># reference: Assignment 4</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pdcorgis(a):</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">try</span>:</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> a.lower()</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.replace(<span class="st">' '</span>, <span class="st">'_'</span>)</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    dataset_url <span class="op">=</span> <span class="ss">f"https://corgis-edu.github.io/corgis/csv/</span><span class="sc">{</span>dataset<span class="sc">}</span><span class="ss">/"</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> requests.get(dataset_url)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    html_code <span class="op">=</span> response.text</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    status <span class="op">=</span> response.status_code</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    soup <span class="op">=</span> BeautifulSoup(html_code, <span class="st">'html.parser'</span>)</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    links <span class="op">=</span> soup.find_all(<span class="st">'a'</span>)</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    download_link <span class="op">=</span> <span class="va">None</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> links: </span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> i.has_attr(<span class="st">'download'</span>):</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        download_link <span class="op">=</span> i[<span class="st">'href'</span>]</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span> </span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> download_link:</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>      csv_url <span class="op">=</span> <span class="ss">f"https://corgis-edu.github.io/corgis/csv/</span><span class="sc">{</span>dataset<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>download_link<span class="sc">}</span><span class="ss">"</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>      corgisdf <span class="op">=</span> pd.read_csv(csv_url)</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> corgisdf</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> <span class="va">None</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="cf">except</span>:</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"An exception ocurred"</span>)</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>cancer_data <span class="op">=</span> pdcorgis(<span class="st">"Cancer"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>breast_total <span class="op">=</span> df[<span class="st">'Types.Breast.Total'</span>].mean()</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>colorectal_total <span class="op">=</span> df[<span class="st">'Types.Colorectal.Total'</span>].mean()</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>lung_total <span class="op">=</span> df[<span class="st">'Types.Lung.Total'</span>].mean()</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>cancer_counts <span class="op">=</span> [breast_total, colorectal_total, lung_total]</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>cancer_labels <span class="op">=</span> [<span class="st">'Breast Cancer'</span>, <span class="st">'Colorectal Cancer'</span>, <span class="st">'Lung Cancer'</span>]</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>plt.pie(cancer_counts, labels<span class="op">=</span>cancer_labels, autopct<span class="op">=</span><span class="st">'</span><span class="sc">%1.1f%%</span><span class="st">'</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'The Proportion of Different Types of Cancer in United States'</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="Topics_files/figure-html/cell-9-output-1.png" class="img-fluid"></p>
 </div>
+</div>
+<p>We could see from above figures that, the lung cancer is the main cancer that lead to death among these three types of cancer in the Unite States. Luan Cancer is the leading cause of cancer death worldwide. An estimated 238,340 PEOPLE will be diagnosed with lung cancer in 2023 in the U.S.</p>
 <p>We are firstly have data visualization to investigate if there are significant differences in total cancer rates among states. Use bar plot. This code assumes that the dataset includes the “State” column for the x-axis and “Total.Rate” column for the y-axis.</p>
 <div class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># refer: https://pythonguides.com/matplotlib-set-y-axis-range/#:~:text=The%20ylim()%20function%20is,use%20the%20ylim()%20function.</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># use bar plot to compare different state cancer death rate. </span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> pdcorgis(<span class="st">"Cancer"</span>)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># data cleaning</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>states <span class="op">=</span> data_frame[<span class="st">"State"</span>]</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>total_rates <span class="op">=</span> data_frame[<span class="st">"Total.Rate"</span>]</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a bar plot</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>plt.bar(states, total_rates)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"State"</span>)</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Cancer Rate"</span>)</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Comparison of Cancer Rates among Different States"</span>)</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">90</span>)  <span class="co"># Rotate x-axis labels if they are too long</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>plt.ylim(<span class="dv">0</span>, <span class="dv">260</span>)</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>states <span class="op">=</span> df[<span class="st">"State"</span>]</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>total_rates <span class="op">=</span> df[<span class="st">"Types.Lung.Total"</span>]</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Sort the states and total_rates in descending order</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>sorted_indices <span class="op">=</span> np.argsort(total_rates)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>sorted_states <span class="op">=</span> states[sorted_indices]</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>sorted_total_rates <span class="op">=</span> total_rates[sorted_indices]</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the bar chart</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">8</span>))</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Find the index of the highest bar</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>highest_index <span class="op">=</span> np.argmax(sorted_total_rates)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Set colors for bars</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">'#421168'</span>] <span class="op">*</span> <span class="bu">len</span>(sorted_states)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>colors[highest_index] <span class="op">=</span> <span class="st">'#fca50a'</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>ax.barh(sorted_states, sorted_total_rates, color<span class="op">=</span>colors)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Cancer Death Rate 2007-2013"</span>, weight<span class="op">=</span><span class="st">'bold'</span>, size<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"State"</span>, labelpad<span class="op">=</span><span class="dv">20</span>, weight<span class="op">=</span><span class="st">'bold'</span>, size<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Total Cancer Death Rates by State"</span>, weight<span class="op">=</span><span class="st">'bold'</span>, size<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>vals <span class="op">=</span> ax.get_xticks()</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tick <span class="kw">in</span> vals:</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    ax.axvline(x<span class="op">=</span>tick, linestyle<span class="op">=</span><span class="st">'dashed'</span>, alpha<span class="op">=</span><span class="fl">0.4</span>, color<span class="op">=</span><span class="st">'#eeeeee'</span>, zorder<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>plt.axvline(x<span class="op">=</span>np.nanmean(total_rates), color<span class="op">=</span><span class="st">'red'</span>, ls<span class="op">=</span><span class="st">'dotted'</span>)</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>ax.tick_params(axis<span class="op">=</span><span class="st">'x'</span>, rotation<span class="op">=</span><span class="dv">90</span>)</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="Topics_files/figure-html/cell-4-output-1.png" class="img-fluid"></p>
+<p><img src="Topics_files/figure-html/cell-10-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>As above figure shown, Utah is the state which has the lowest cancer death rate. And West Virginia is the state with highest cancer death rate.</p>
+<p>As above figure shown, Utah is the state which has the lowest cancer death rate. And West Virginia is the state with highest lung cancer death rate. The dot line means average cancer rate for states. We are going to choose West Virginia as the state sample for our research to investigate why its cancer rate is the highest. Next, we are going to display a line plot to analyze trends in cancer rates across age groups in west Virginia.</p>
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select the relevant columns for race-based analysis</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>race_columns <span class="op">=</span> [<span class="st">'Rates.Race.White'</span>, <span class="st">'Rates.Race.White non-Hispanic'</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>                <span class="st">'Rates.Race.Black'</span>, <span class="st">'Rates.Race.Asian'</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                <span class="st">'Rates.Race.Indigenous'</span>, <span class="st">'Rates.Race.Hispanic'</span>]</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>race_names <span class="op">=</span> [<span class="st">"White"</span>, <span class="st">"White non-Hispanic"</span>, <span class="st">"Black"</span>, <span class="st">"Black non-Hispanic"</span>, <span class="st">"Asian"</span>, <span class="st">"Indigenous"</span>]</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>cancer_types <span class="op">=</span> [<span class="st">'Lung'</span>, <span class="st">'Breast'</span>, <span class="st">'Colorectal'</span>]</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new dataframe with race columns</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>race_df <span class="op">=</span> df[race_columns]</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>cancer_type <span class="op">=</span> <span class="st">"Lung"</span> </span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>subset_df <span class="op">=</span> df[[<span class="ss">f"Types.</span><span class="sc">{</span>cancer_type<span class="sc">}</span><span class="ss">.Race.</span><span class="sc">{</span>race<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> race <span class="kw">in</span> race_names]]</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the average cancer rates for each race</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>avg_rates <span class="op">=</span> subset_df.mean()</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the average cancer rates by race</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>plt.barh(race_names, avg_rates.values)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Race'</span>)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Average Cancer Rates'</span>)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Variations in Lung Cancer Rates by Race'</span>)</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">90</span>)</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="Topics_files/figure-html/cell-11-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Asian has the lowest average lung cancer rate among the racial group. What is the reason? Genetic, life style or other reasons?</p>
+<p>Next, we are going to data visualize how the lung cancer rate change across age.</p>
+<div class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>age_groups <span class="op">=</span> [<span class="st">'18 - 44'</span>, <span class="st">'45 - 64'</span>, <span class="st">'&gt; 64'</span>]</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>lung_rates_female <span class="op">=</span> [</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'Types.Lung.Age and Sex.Female.18 - 44'</span>].mean(),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'Types.Lung.Age and Sex.Female.45 - 64'</span>].mean(),</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'Types.Lung.Age and Sex.Female.&gt; 64'</span>].mean()</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>lung_rates_male <span class="op">=</span> [</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'Types.Lung.Age and Sex.Male.18 - 44'</span>].mean(),</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'Types.Lung.Age and Sex.Male.45 - 64'</span>].mean(),</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'Types.Lung.Age and Sex.Male.&gt; 64'</span>].mean()</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>plt.plot(age_groups, lung_rates_female, marker<span class="op">=</span><span class="st">'o'</span>, label<span class="op">=</span><span class="st">'Female'</span>)</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>plt.plot(age_groups, lung_rates_male, marker<span class="op">=</span><span class="st">'o'</span>, label<span class="op">=</span><span class="st">'Male'</span>)</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Age Group'</span>)</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Average Lung Cancer Rates'</span>)</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Trend of Lung Cancer Rates Across Age Groups in the United States'</span>)</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="Topics_files/figure-html/cell-12-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>From above figure, we could see no matter the line rapidly increase in the elderly group (&gt; 64). It indicates that age supports the concept that lung cancer is a disease largely associated with aging; so the longer one lives, the greater that person’s risk for developing the disease.</p>
+</section>
 </section>
 <section id="analysis" class="level1">
 <h1>Analysis</h1>
 </section>
 <section id="results" class="level1">
 <h1>Results</h1>
+<p>Cancer doesn’t affect all ethnic groups the same.</p>
 </section>
 <section id="discussion" class="level1">
 <h1>Discussion</h1>
+<p>Lifestyle behaviors encompassing diet, physical exercise, sun exposure, smoking, and alcohol use and sexual practice behaviors Socioeconomic factors including education and income level, access to health insurance, and routine medical screening and services Genetic factors involving inherited genes and a family history of certain diseases Cultural factors involving practices, beliefs and in some instances mistrust of the health care system, which may prevent some from seeking preventive screening services Age, which supports the concept that cancer is a disease largely associated with aging; so the longer one lives, the greater that person’s risk for developing the disease</p>
+<p>Due to the increasing aging of the population, the rapid development of industrialization and urbanization brought about by rapid economic growth and the deterioration of the environment, as well as the high smoking rate, the harm of lung cancer is gradually emerging.</p>
+</section>
+<section id="refereence-source" class="level1">
+<h1>Refereence &amp; Source</h1>
+<ol type="1">
+<li><p>International Agency for Research on Cancer. <em><a href="https://gco.iarc.fr/today/data/fact-sheets-cancers">GLOBOCAN Lung Cancer Facts Sheet 2020</a></em>.</p></li>
+<li><p>American Cancer Society. <em>Cancer Facts and Figures 2023</em>. Atlanta; American Cancer Society: 2023.</p></li>
+</ol>
+<div class="cell" data-execution_count="73">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df_edu<span class="op">=</span>pd.read_csv(<span class="st">'./Data/Education_level_2008_2012.csv'</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>df_edu.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="73">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">State</th>
+<th data-quarto-table-cell-role="th">Completing college</th>
+<th data-quarto-table-cell-role="th">Completing some college</th>
+<th data-quarto-table-cell-role="th">Completing high school only</th>
+<th data-quarto-table-cell-role="th">Not completing high school</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>United States</td>
+<td>0.285</td>
+<td>0.290</td>
+<td>0.282</td>
+<td>0.143</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>Alabama</td>
+<td>0.223</td>
+<td>0.290</td>
+<td>0.313</td>
+<td>0.174</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>Alaska</td>
+<td>0.275</td>
+<td>0.370</td>
+<td>0.271</td>
+<td>0.084</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>Arizona</td>
+<td>0.266</td>
+<td>0.344</td>
+<td>0.244</td>
+<td>0.146</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>Arkansas</td>
+<td>0.198</td>
+<td>0.284</td>
+<td>0.351</td>
+<td>0.167</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="74">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>edu_labels <span class="op">=</span> [<span class="st">'Completing college'</span>, <span class="st">'Completing some college'</span>, <span class="st">'Completing high school only'</span>, <span class="st">'Not completing high school'</span>]</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>states <span class="op">=</span> [<span class="st">'United States'</span>, <span class="st">'West Virginia'</span>, <span class="st">'Utah'</span>]</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>edu_data <span class="op">=</span> {}</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co"># use a dict to store the data</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> state <span class="kw">in</span> states:</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> df_edu[df_edu[<span class="st">'State'</span>] <span class="op">==</span> state]</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    comp_college <span class="op">=</span> data[<span class="st">'Completing college'</span>].<span class="bu">sum</span>()</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    comp_some_college <span class="op">=</span> data[<span class="st">'Completing some college'</span>].<span class="bu">sum</span>()</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    comp_high <span class="op">=</span> data[<span class="st">'Completing high school only'</span>].<span class="bu">sum</span>()</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    not_comp_high <span class="op">=</span> data[<span class="st">'Not completing high school'</span>].<span class="bu">sum</span>()</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    edu_counts <span class="op">=</span> [comp_college, comp_some_college, comp_high, not_comp_high]</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    edu_data[state] <span class="op">=</span> edu_counts</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="bu">len</span>(states), ncols<span class="op">=</span><span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">10</span>))</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, state <span class="kw">in</span> <span class="bu">enumerate</span>(states):</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> axes[i]</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    edu_counts <span class="op">=</span> edu_data[state]</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    explode <span class="op">=</span> [<span class="dv">0</span> <span class="cf">if</span> label <span class="op">!=</span> <span class="st">'Completing high school only'</span> <span class="cf">else</span> <span class="fl">0.1</span> <span class="cf">for</span> label <span class="kw">in</span> edu_labels]  <span class="co"># highlight the slides</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>    ax.pie(edu_counts, labels<span class="op">=</span>edu_labels, autopct<span class="op">=</span><span class="st">'</span><span class="sc">%1.1f%%</span><span class="st">'</span>, startangle<span class="op">=</span><span class="dv">0</span>, explode<span class="op">=</span>explode)</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    ax.set_title(state, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>fig.suptitle(<span class="st">'The Proportion of Highest Education Level 2008-2012'</span>)</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="Topics_files/figure-html/cell-16-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>From above pie charts, we can see that the percent of ‘completing high school only’ and ‘not completing high school’ is higher than both United State (avg) and Utah (the state has lowest cancer death rate). To further prove this, a line chart would be need.</p>
+<div class="cell" data-scrolled="true" data-execution_count="83">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df_edu[<span class="st">'Completing college + Completing some college'</span>] <span class="op">=</span> df_edu[<span class="st">'Completing college'</span>] <span class="op">+</span> df_edu[<span class="st">'Completing some college'</span>]</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>df_edu <span class="op">=</span> df_edu.sort_values(<span class="st">'Completing college + Completing some college'</span>, ascending <span class="op">=</span> <span class="va">False</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the figure size</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">10</span>))</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the stacked bar plot</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>plt.barh(df_edu[<span class="st">'State'</span>], df_edu[<span class="st">'Completing college'</span>], label<span class="op">=</span><span class="st">'Completing college'</span>)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>plt.barh(df_edu[<span class="st">'State'</span>], df_edu[<span class="st">'Completing some college'</span>], </span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>         left<span class="op">=</span>df_edu[<span class="st">'Completing college'</span>], label<span class="op">=</span><span class="st">'Completing some college'</span>)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Add labels and title</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'State'</span>)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Rate'</span>)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Percentage of People with Higher Education by State'</span>)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Add legend</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Show the plot</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="Topics_files/figure-html/cell-17-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>From above figure, we can see the percentage of people with higher education in West Virginia is the lowest state in United States.</p>
 
 
 </section>
