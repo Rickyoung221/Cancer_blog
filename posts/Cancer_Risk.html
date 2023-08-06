@@ -216,7 +216,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="https://www.mdanderson.org/images/publications/cancerwise/Generics/cancer-metastasis-cancerwise.jpg" class="img-fluid" alt="What is cancer? | MD Anderson Cancer Center"> Image Creator: Jordan T. Pietz MA, CMI Copyright: © 2020 The University of Texas MD Anderson Cancer Center</p>
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
-<p>This project aims to investigate potential factors that affect the cancer death rate. Based on the baseline datasets found, the project would mainly take the state which has the highest cancer mortality as the main comparison sample, focusing on the field of education, air quality, and population distribution to investigate their correlation to the cancer death rate.</p>
+<p>This project aims to investigate potential factors that affect the cancer death rate. Based on the baseline datasets found, the project would mainly take the state which has the highest cancer mortality as the main comparison sample, focusing on the field of education, air quality, aging population, and race differences to investigate their correlation to the cancer death rate.</p>
 <section id="data-description-and-source" class="level2">
 <h2 class="anchored" data-anchor-id="data-description-and-source">Data Description and Source</h2>
 <table class="table">
@@ -262,6 +262,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Are there any correlations between cancer death rates and other factors, such as educational level? Any others?</li>
 <li>Any measures that can reduce the cancer death rate?</li>
 </ul>
+<p><a href="https://github.com/Rickyoung221/DH140_Final_Project">Github Repository of this Project</a></p>
 </section>
 </section>
 <section id="methods" class="level1">
@@ -891,11 +892,14 @@ dtype: float64</code></pre>
 </div>
 </div>
 <p>There is a 16-row footer note at the bottom of the CSV files, to solve this, use <code>skip_blank_lines=True</code> to skip the blank rows and <code>skipfooter=16</code> to skip the footer rows while reading the dataset.</p>
-<div class="cell" data-scrolled="true" data-execution_count="13">
+<div id="reread-age-dataset" class="cell" data-scrolled="true" data-execution_count="20">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Re-read dataset 4</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>df_age <span class="op">=</span> pd.read_csv(<span class="st">'./data/population_distribution_age.csv'</span>, skipfooter<span class="op">=</span><span class="dv">16</span>, engine<span class="op">=</span><span class="st">'python'</span> )</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># examining missing values</span></span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_age.isnull().mean())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>State       0.0
 2008        0.0
@@ -1181,6 +1185,7 @@ if (outputEl) {{
 </div>
 <p>From the above figure, we could see the line rapidly increased in the elderly group (&gt; 64) for both females and males. It indicates that age supports the concept that lung cancer is a disease largely associated with aging; so the longer one lives, the greater that person’s risk for developing the disease.</p>
 <p>We also can observe that the dataset does not have data for the age group under 18, the potential reason might be that the access to collect this data was difficult during 2007-2013 and the rate is extremely small. To make the plots “good” and more comprehensive, 0 is assigned to this age group in this plot. We will discuss more details about this data absence in the section of Discussion.</p>
+<p>As the rate for the elderly group is much higher than others, would the aging population be a risk factor?</p>
 </section>
 </section>
 </section>
@@ -1188,7 +1193,13 @@ if (outputEl) {{
 <h1>Analysis &amp; Results</h1>
 <section id="q2-what-would-be-the-risk-factors-of-cancer-mortality" class="level3">
 <h3 class="anchored" data-anchor-id="q2-what-would-be-the-risk-factors-of-cancer-mortality">Q2: What Would be The Risk Factors of Cancer Mortality?</h3>
-<p>There are some assumptions for the potential factors that affect lung cancer rate and they would be further topics that for the project to analyze: - Educational Attainment - Environment - Air Quality - Population Distribution by Age - Race / Ethnicty</p>
+<p>There are some assumptions for the potential factors that affect lung cancer rate and they would be further topics that for the project to analyze:</p>
+<ul>
+<li>Educational Attainment</li>
+<li>Environment - Air Quality</li>
+<li>Aging Population</li>
+<li>Race / Ethnicty</li>
+</ul>
 </section>
 <section id="assume-1-education" class="level2">
 <h2 class="anchored" data-anchor-id="assume-1-education">Assume 1: Education</h2>
@@ -1398,8 +1409,8 @@ That is, as the proportion of highly-educated people increases, the cancer morta
 <p>Therefore, the influence of air quality would be difficult to detect in the United States. To further investigate it, should expand the dataset to the foreign region which has unhealthy air quality.</p>
 </section>
 </section>
-<section id="assume-3-population-distribution-by-age" class="level2">
-<h2 class="anchored" data-anchor-id="assume-3-population-distribution-by-age">Assume 3: Population Distribution by Age</h2>
+<section id="assume-3-aging-population" class="level2">
+<h2 class="anchored" data-anchor-id="assume-3-aging-population">Assume 3: Aging Population</h2>
 <p>Similarly, we will use regression analysis to Identify if population distribution by age is a risk factor for lung cancer mortality. The average rate in this time interval would be taken as the x-axis, the dependable variable. And the lung cancer death rate would be still taken as the y-axis.</p>
 <div class="cell" data-execution_count="56">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge the dataframes</span></span>
