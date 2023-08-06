@@ -326,9 +326,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="overciew" class="level4">
 <h4 class="anchored" data-anchor-id="overciew">Overciew</h4>
-<div class="cell" data-scrolled="true" data-execution_count="3">
+<div class="cell" data-scrolled="true" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df_cancer.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="14">
 <div>
 
 
@@ -347,7 +347,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <th data-quarto-table-cell-role="th">Rates.Age and Sex.&lt; 18.Female</th>
 <th data-quarto-table-cell-role="th">Rates.Age and Sex.&lt; 18.Male</th>
 <th data-quarto-table-cell-role="th">...</th>
-<th data-quarto-table-cell-role="th">Types.Lung.Age and Sex.Male.45 - 64</th>
 <th data-quarto-table-cell-role="th">Types.Lung.Age and Sex.Female.&gt; 64</th>
 <th data-quarto-table-cell-role="th">Types.Lung.Age and Sex.Male.&gt; 64</th>
 <th data-quarto-table-cell-role="th">Types.Lung.Race.White</th>
@@ -357,6 +356,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <th data-quarto-table-cell-role="th">Types.Lung.Race.Asian</th>
 <th data-quarto-table-cell-role="th">Types.Lung.Race.Indigenous</th>
 <th data-quarto-table-cell-role="th">Types.Lung.Race.Hispanic</th>
+<th data-quarto-table-cell-role="th">Abbreviation</th>
 </tr>
 </thead>
 <tbody>
@@ -373,7 +373,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>2.0</td>
 <td>2.1</td>
 <td>...</td>
-<td>102.9</td>
 <td>221.7</td>
 <td>457.4</td>
 <td>59.9</td>
@@ -383,6 +382,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>23.0</td>
 <td>22.9</td>
 <td>14.8</td>
+<td>AL</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
@@ -397,7 +397,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>0.0</td>
 <td>0.0</td>
 <td>...</td>
-<td>50.3</td>
 <td>268.3</td>
 <td>335.0</td>
 <td>48.7</td>
@@ -407,6 +406,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>33.0</td>
 <td>74.4</td>
 <td>0.0</td>
+<td>AK</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">2</td>
@@ -421,7 +421,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>2.6</td>
 <td>2.5</td>
 <td>...</td>
-<td>47.0</td>
 <td>191.9</td>
 <td>275.8</td>
 <td>39.5</td>
@@ -431,6 +430,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>21.3</td>
 <td>11.1</td>
 <td>21.6</td>
+<td>AZ</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">3</td>
@@ -445,7 +445,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>2.6</td>
 <td>2.0</td>
 <td>...</td>
-<td>106.5</td>
 <td>248.7</td>
 <td>484.7</td>
 <td>63.4</td>
@@ -455,6 +454,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>18.1</td>
 <td>16.2</td>
 <td>14.6</td>
+<td>AR</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">4</td>
@@ -469,7 +469,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>2.4</td>
 <td>2.8</td>
 <td>...</td>
-<td>36.8</td>
 <td>192.5</td>
 <td>269.0</td>
 <td>37.2</td>
@@ -479,11 +478,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>25.8</td>
 <td>18.4</td>
 <td>18.3</td>
+<td>CA</td>
 </tr>
 </tbody>
 </table>
 
-<p>5 rows × 75 columns</p>
+<p>5 rows × 76 columns</p>
 </div>
 </div>
 </div>
@@ -492,10 +492,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="data-cleaning" class="level4">
 <h4 class="anchored" data-anchor-id="data-cleaning">Data Cleaning</h4>
 <p>use <code>isnull()</code> to detect missing values for an array-like object.</p>
-<div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># examining missing values</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Missing values distribution: "</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_cancer.isnull().mean())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Missing values distribution: "</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_cancer.isnull().mean())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Missing values distribution: 
 State                                 0.0
@@ -504,12 +503,12 @@ Total.Number                          0.0
 Total.Population                      0.0
 Rates.Age.&lt; 18                        0.0
                                      ... 
-Types.Lung.Race.Black                 0.0
 Types.Lung.Race.Black non-Hispanic    0.0
 Types.Lung.Race.Asian                 0.0
 Types.Lung.Race.Indigenous            0.0
 Types.Lung.Race.Hispanic              0.0
-Length: 75, dtype: float64</code></pre>
+Abbreviation                          0.0
+Length: 76, dtype: float64</code></pre>
 </div>
 </div>
 <p>No missing values found.</p>
@@ -517,15 +516,19 @@ Length: 75, dtype: float64</code></pre>
 </section>
 <section id="educational-attainment-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="educational-attainment-dataset">2. Educational Attainment Dataset</h3>
-<div class="cell" data-execution_count="5">
+<p>Read dataset file as data frame <code>de_edu</code>.</p>
+<div id="read-edu-dataset" class="cell" data-execution_count="16">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read dataset 2</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df_edu<span class="op">=</span>pd.read_csv(<span class="st">'./data/education_level_2008_2012.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <section id="overview" class="level4">
 <h4 class="anchored" data-anchor-id="overview">Overview</h4>
-<div class="cell" data-execution_count="6">
+<div class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df_edu.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="17">
 <div>
 
 
@@ -590,10 +593,9 @@ Length: 75, dtype: float64</code></pre>
 </section>
 <section id="data-cleaning-1" class="level4">
 <h4 class="anchored" data-anchor-id="data-cleaning-1">Data Cleaning</h4>
-<div class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># examining missing values</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Missing values distribution: "</span>)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_edu.isnull().mean())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Missing values distribution: "</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_edu.isnull().mean())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Missing values distribution: 
 State                          0.0
@@ -608,8 +610,10 @@ dtype: float64</code></pre>
 </section>
 <section id="median-aqi-datasets" class="level3">
 <h3 class="anchored" data-anchor-id="median-aqi-datasets">3. Median AQI Datasets</h3>
-<p>Read the data frames, and perform data pre-processing and data cleaning.</p>
-<div class="cell" data-execution_count="8">
+<p>Read dataset files as data frames <code>df_aqi</code> , and perform data pre-processing and data cleaning while reading.</p>
+<div id="read-aqi-dataset" class="cell" data-execution_count="19">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>data_dir <span class="op">=</span> Path(<span class="st">'./data/airdata/'</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>csv_files <span class="op">=</span> data_dir.glob(<span class="st">'*.csv'</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -620,6 +624,7 @@ dtype: float64</code></pre>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    df_aqi <span class="op">=</span> df_aqi[(df_aqi[<span class="st">'Median AQI'</span>] <span class="op">!=</span> <span class="dv">0</span>) <span class="op">&amp;</span> (df_aqi[<span class="st">'Median AQI'</span>].notnull())]</span>
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    state_aqi <span class="op">=</span> df_aqi.groupby(<span class="st">'State'</span>)[<span class="st">'Median AQI'</span>].mean().to_dict()</span>
 <span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    state_aqi_avg_dict.update(state_aqi)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <section id="overview-1" class="level4">
 <h4 class="anchored" data-anchor-id="overview-1">Overview</h4>
@@ -774,15 +779,19 @@ dtype: float64</code></pre>
 </section>
 <section id="age-distribution-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="age-distribution-dataset">4. Age Distribution Dataset</h3>
-<div class="cell" data-execution_count="10">
+<p>Read dataset file as dataframe <code>df_age</code>.</p>
+<div id="read-age-dataset" class="cell" data-execution_count="10">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read dataset 4</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>df_age <span class="op">=</span> pd.read_csv(<span class="st">'./data/population_distribution_age.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <section id="overview-2" class="level4">
 <h4 class="anchored" data-anchor-id="overview-2">Overview</h4>
-<div class="cell" data-execution_count="45">
+<div class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df_age.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="45">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <div>
 
 
@@ -865,10 +874,9 @@ dtype: float64</code></pre>
 </section>
 <section id="data-cleaning-3" class="level4">
 <h4 class="anchored" data-anchor-id="data-cleaning-3">Data Cleaning</h4>
-<div class="cell" data-scrolled="true" data-execution_count="46">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># examining missing values</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Missing values distribution: "</span>)</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_age.isnull().mean())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-scrolled="true" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Missing values distribution: "</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_age.isnull().mean())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Missing values distribution: 
 State       0.101449
@@ -883,7 +891,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 <p>There is a 16-row footer note at the bottom of the CSV files, to solve this, use <code>skip_blank_lines=True</code> to skip the blank rows and <code>skipfooter=16</code> to skip the footer rows while reading the dataset.</p>
-<div class="cell" data-scrolled="true" data-execution_count="47">
+<div class="cell" data-scrolled="true" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Re-read dataset 4</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>df_age <span class="op">=</span> pd.read_csv(<span class="st">'./data/population_distribution_age.csv'</span>, skipfooter<span class="op">=</span><span class="dv">16</span>, engine<span class="op">=</span><span class="st">'python'</span> )</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># examining missing values</span></span>
